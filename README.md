@@ -27,7 +27,7 @@ These skills are organized around user jobs rather than source-code directories.
 Each skill lives at:
 
 ```text
-skills/gorse/<skill-name>/SKILL.md
+skills/<skill-name>/SKILL.md
 ```
 
 Each file uses YAML frontmatter followed by actionable Markdown guidance.
