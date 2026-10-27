@@ -1,10 +1,30 @@
 # Gorse Skills
 
-Reusable agent skills for contributing to the Gorse recommender-system ecosystem.
-These are curated workflows, not an export of chat histories or a replacement for
-repository instructions and the source code at the revision being changed.
+Reusable agent skills for **using, operating, and contributing to** the Gorse
+recommender system. User skills turn the [official documentation](https://github.com/gorse-io/docs)
+into task-oriented procedures; contributor skills support source changes.
 
-## Skills
+## User skills
+
+Start here to build a recommendation service without modifying Gorse source.
+
+| Skill | Use it for |
+| --- | --- |
+| [gorse-deployment](skills/gorse-deployment/SKILL.md) | Run a demo, choose a production topology, configure storage, and verify deployment |
+| [gorse-data-ingestion](skills/gorse-data-ingestion/SKILL.md) | Model and import users, items, and genuine feedback; validate event semantics |
+| [gorse-api-integration](skills/gorse-api-integration/SKILL.md) | Connect an application through REST/SDKs, retrieve recommendations, and handle feedback |
+| [gorse-recommendation-tuning](skills/gorse-recommendation-tuning/SKILL.md) | Select candidates, configure ranking/fallback, handle cold starts, and evaluate quality |
+| [gorse-operations](skills/gorse-operations/SKILL.md) | Inspect health/tasks, diagnose empty or stale results, and plan safe backup/restore |
+
+Suggested path: deployment → data ingestion → API integration → recommendation
+tuning. Use operations whenever a running service needs inspection or recovery.
+Each skill links to the relevant official docs. Match the documentation and
+configuration to the deployed Gorse release; development-branch docs can differ.
+
+## Contributor skills
+
+Use these when the task is to change Gorse source, SDKs, installers, or docs—not
+merely configure or consume a running recommendation service.
 
 | Skill | Use it for |
 | --- | --- |
@@ -20,39 +40,48 @@ repository instructions and the source code at the revision being changed.
 Each directory under `skills/` is independently usable and contains a `SKILL.md`
 with `name` and `description` frontmatter. Copy the selected **whole directory**,
 including any references, into the skill directory supported by your agent.
-Use `gorse-contribution-workflow` alongside a specialized skill for end-to-end
-contribution work. Paths in a skill are relative to the repository being changed
-unless explicitly described otherwise.
+No skill requires installing the entire collection.
 
-Read the target repository's instructions first. Discover branch names, package
-scripts, API contracts, and test prerequisites from the current checkout. Historical
-implementation patterns are prompts to inspect code, not commands to apply blindly.
-Only commit, push, merge, deploy, or install tools within the user's authorization.
+For user tasks, identify the running version, target environment, permissions, and
+existing data before making changes. Begin with read-only inspection. Obtain
+approval before production deployment, writes, import/restore, destructive actions,
+or paid external services. Do not use a live production instance for examples.
+
+For contributor tasks, read repository instructions and inspect the requested
+revision. Discover branch names, package scripts, API contracts, and test prerequisites
+from the checkout. Pair `gorse-contribution-workflow` with a specialized skill for
+end-to-end contribution work. Historical patterns are inspection prompts, not
+commands to apply blindly. Publish only within the user's authorization.
 
 ## Scope
 
-Included: reusable public Gorse development practices distilled from core, CLI,
-SDK, documentation, and storage work.
+Included: public Gorse user workflows grounded in official documentation, and
+reusable contributor practices distilled from core, CLI, SDK, docs, and storage work.
+These skills are not copies of chat histories or a replacement for release-specific
+documentation, repository instructions, or effective runtime configuration.
 
 Excluded: private Cloud project details, credentials, personal author identities,
 machine-specific paths, transient failures, session transcripts, and raw task logs.
 Standalone vector database development and unrelated infrastructure workflows are
-outside this initial collection.
+outside this collection.
 
 ## Contributing
 
-- Keep each skill focused and its trigger description specific.
+- Keep each skill focused and its trigger description specific about the audience.
+- Ground user-facing flags, config fields, ports, and API examples in official docs;
+  include source links and distinguish documented behavior from operational advice.
 - Prefer concise procedures over copies of past patches or discussions.
 - Put longer implementation checklists in that skill's `references/` directory.
 - Keep references relative and self-contained; never depend on a private local skill.
 - Preserve explicit user scope and distinguish verified results from assumptions.
 - Avoid prescribing a historical API or dependency version as universally current.
-- Run the repository validator before submitting changes:
+- Run the repository validator and its tests before submitting changes:
 
 ```sh
 python3 scripts/validate_skills.py
+python3 -m unittest discover -s scripts -p 'test_*.py' -v
 ```
 
 The validator checks structure, frontmatter, local links, and accidental private
-machine/session references. It does not execute the target Gorse repositories'
-builds or prove their current APIs match every example.
+machine/session references. It does not execute a live Gorse deployment or prove
+that all configuration/API examples match every supported release.
