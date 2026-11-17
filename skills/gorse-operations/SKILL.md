@@ -66,30 +66,32 @@ use `X-API-Key` with the server API key, not the admin API key.
 - **Users / Items:** inspect a specific entity, its feedback and recommender previews;
   avoid delete controls. **Advance** import/purge controls are writes, not diagnosis.
 
-For [Gorse CLI][cli], use a saved context to avoid putting secrets in command-line
-arguments. The following loopback context is only for a local/private sandbox;
-substitute the approved TLS-protected master endpoint for a remote deployment.
+For current [Gorse CLI][cli] syntax, use a saved **application** rather than
+putting keys in command-line arguments. Check installed help first: this block
+follows CLI source `1213e9dada2be39b8b4906541bd67f26133426dd`, not the older
+docs snapshot. A released binary may lack newer commands. For full procedures,
+see the collection's [CLI skill](../gorse-cli/SKILL.md).
+
+The loopback example is only for a local/private sandbox; use the approved
+TLS-protected master endpoint for a remote deployment.
 
 ```sh
-gorse-cli context add local --endpoint http://localhost:8088
-gorse-cli context current
-gorse-cli cluster-info
+gorse-cli application add local --endpoint http://localhost:8088
+gorse-cli application current
 gorse-cli stats
 gorse-cli ps
-gorse-cli get users -n 20
-gorse-cli get items -n 20
-gorse-cli get feedback -n 20
-gorse-cli get categories
+gorse-cli user list -n 20
+gorse-cli item list -n 20
+gorse-cli feedback list -n 20
+gorse-cli item categories
 gorse-cli pipeline get
-gorse-cli pipeline schema
 ```
 
-`context add` prompts for the admin API key and stores context credentials in the
-system keyring. Check the selected context every time; context creation changes
-local CLI state. Do not paste keys into chat or share unsanitized context/config
-output. CLI administration uses the master endpoint and admin key; a server API
-key is not a substitute. If a command is absent, consult that CLI version's help
-rather than inventing an equivalent flag or endpoint.
+`application add` saves credentials in the keyring and selects locally. Before
+writes, check per-field precedence: flags → environment → explicit application →
+current application. Use the admin key, not the server API key; protect config
+output. Copy user/item next-page commands with opaque cursors unchanged. Feedback
+lists and item searches have no CLI cursor in this revision; do not invent one.
 
 ## Logs, metrics, and workload freshness
 
@@ -121,7 +123,7 @@ Follow [FAQ][faq], [Pipeline][pipeline], [Data Source][data], and the actual pip
 
 ```sh
 gorse-cli recommend latest -n 10
-gorse-cli get feedback --user USER_ID
+gorse-cli feedback list --user USER_ID
 gorse-cli recommend item-to-user USER_ID -n 10
 ```
 
@@ -151,12 +153,12 @@ gorse-cli recommend item-to-user USER_ID -n 10
 [CLI][cli] documents binary data backup/restore; [Dashboard][dashboard] offers JSON
 lines export/import separately. Do not interchange these formats.
 
-1. Confirm the current master context, authorized data scope, release, and a new
+1. Confirm the current master application and overrides, authorized data scope, release, and a new
    output filename that will not overwrite an existing backup. Export contains
    application data: restrict access and retention. For an approved backup:
 
 ```sh
-gorse-cli context current
+gorse-cli application current
 gorse-cli dump backup.bin
 ```
 
@@ -174,10 +176,11 @@ gorse-cli dump backup.bin
    task progress and recommendation previews. Quick-start restarts the Compose
    `master` after sample import; apply that only to a matching authorized deployment,
    not as a universal restore requirement.
-5. Before a pipeline change, preserve `pipeline get` output and inspect `pipeline
-   schema`. CLI patch/reset and RecFlow Save/Clear change live behavior. RecFlow
-   Clear and CLI reset return to file defaults; request approval and compare the
-   effective pipeline afterwards. Do not promise hot reload of unrelated settings.
+5. Before a pipeline change, preserve `pipeline get` output securely and inspect
+   the installed group's `get` / `update --help`. CLI updates/reset and RecFlow
+   Save/Clear change live behavior. Clear/reset returns to file defaults, not the
+   saved baseline. Obtain approval and read back the effective settings; updates
+   lack compare-and-swap protection. Do not assume an unlisted schema/apply command.
 6. Dashboard user/item deletion and **Purge Database** require explicit authorization.
    Purge is irreversible. Never use purge, volume deletion, or Helm redeployment as
    a routine health fix, credential rotation, or rollback strategy.
@@ -185,7 +188,7 @@ gorse-cli dump backup.bin
 ## Official sources (pinned docs revision)
 
 [rest]: https://github.com/gorse-io/docs/blob/5cef16bd228c4095de6bbfa0f46832c198a305eb/src/docs/api/restful-api.md
-[cli]: https://github.com/gorse-io/docs/blob/5cef16bd228c4095de6bbfa0f46832c198a305eb/src/docs/gorse-cli.md
+[cli]: https://github.com/gorse-io/cli/blob/1213e9dada2be39b8b4906541bd67f26133426dd/README.md
 [dashboard]: https://github.com/gorse-io/docs/blob/5cef16bd228c4095de6bbfa0f46832c198a305eb/src/docs/dashboard/overview.md
 [RecFlow precedence and Save/Clear](https://github.com/gorse-io/docs/blob/5cef16bd228c4095de6bbfa0f46832c198a305eb/src/docs/dashboard/recflow.md).
 [faq]: https://github.com/gorse-io/docs/blob/5cef16bd228c4095de6bbfa0f46832c198a305eb/src/docs/faq.md
