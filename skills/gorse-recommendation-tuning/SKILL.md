@@ -92,6 +92,16 @@ recommenders = ["latest"]
   personalized model. An empty recommendation configuration yields a latest-only
   baseline in the referenced docs, not evidence of personalization.
 
+## Edit through the CLI
+
+For current version-gated application selection, candidate CRUD, ranker/fallback
+wiring, data-source/search/replacement/cache updates, and post-write readback,
+use the [CLI operation skill](../gorse-cli/SKILL.md). Inspect installed help before
+using its examples. The historical docs below call a remote ranker `llm`; the
+referenced newer CLI uses `reranker`, so match the deployed server rather than
+copying type names across versions. Pipeline writes require approval, can trigger
+training/external-provider costs, and are last-writer-wins rather than CAS.
+
 ## Freshness and repetition
 
 - Inspect master dataset/model tasks, worker generation, and server filtering as

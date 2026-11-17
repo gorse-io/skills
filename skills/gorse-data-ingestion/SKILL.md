@@ -66,6 +66,14 @@ This is an illustrative policy to adapt, not a command to apply. Positive and re
 - Select a bounded batch size appropriate for the deployment; these docs do not establish a universal REST payload limit or transaction guarantee. Keep a source-to-batch manifest and record acknowledged/uncertain batches.
 - With an SDK, check which HTTP operation its insertion method actually uses before enabling retries; method names alone do not establish duplicate handling.
 
+### CLI resource transfers
+
+Use the [CLI operation skill](../gorse-cli/SKILL.md) for version-gated JSONL
+`user/item/feedback import` and `export`, file/stdin/stdout handling, and readback.
+These are resource transfers, not binary restore. Imports can replace existing
+keys and partially commit before an error; confirm scope and server metadata
+support before replay. Do not assume CLI-side validation or a dry-run mode.
+
 ### Binary import/restore
 
 The quick start demonstrates `POST /api/restore` with a binary Gorse dump, not arbitrary CSV or JSON. The CLI documents `gorse-cli dump <file>` and `gorse-cli restore <file>`.
@@ -100,7 +108,7 @@ The Kafka guide marks the connector under development. Match the connector artif
 1. Reconcile source counts after applying the feedback unique key; raw event totals need not equal stored feedback totals. Check write responses (`RowAffected`) but do not use them as the sole proof of correct data.
 2. Read back specific users/items and feedback pairs, comparing IDs, labels, categories, values, and timestamps.
 3. Page through `GET /api/users`, `/api/items`, and `/api/feedback` with `n` and opaque `cursor`; responses contain `Cursor` and `Users`, `Items`, or `Feedback`. Follow the returned cursor according to the deployed contract; detect repeated cursors rather than looping indefinitely.
-4. Inspect dashboard Tasks or, with separately configured admin access, `gorse-cli stats`, `gorse-cli ps`, and `gorse-cli get feedback -n 20`.
+4. Inspect dashboard Tasks or, with separately configured admin access, `gorse-cli stats`, `gorse-cli ps`, and `gorse-cli feedback list -n 20`.
 5. A successful write is not proof models/caches are refreshed. Check task progress before judging recommendations. FAQ: collaborative training needs positive feedback; click-through training needs read feedback without positive feedback. Correct real-event mapping, not fabricated events.
 6. Preview recommendations without writeback. Confirm category membership and hidden-item handling, and report ingestion acceptance separately from recommendation readiness.
 

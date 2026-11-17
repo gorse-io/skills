@@ -2,7 +2,8 @@
 
 Reusable agent skills for **using and operating** the Gorse recommender system.
 These skills turn the [official documentation](https://github.com/gorse-io/docs)
-into task-oriented procedures for application users and operators.
+and [CLI command definitions](https://github.com/gorse-io/cli) into task-oriented
+procedures for application users and operators.
 
 ## User skills
 
@@ -14,6 +15,7 @@ Start here to build a recommendation service without modifying Gorse source.
 | [gorse-data-ingestion](skills/gorse-data-ingestion/SKILL.md) | Model and import users, items, and genuine feedback; validate event semantics |
 | [gorse-api-integration](skills/gorse-api-integration/SKILL.md) | Connect an application through REST/SDKs, retrieve recommendations, and handle feedback |
 | [gorse-recommendation-tuning](skills/gorse-recommendation-tuning/SKILL.md) | Select candidates, configure ranking/fallback, handle cold starts, and evaluate quality |
+| [gorse-cli](skills/gorse-cli/SKILL.md) | Select applications, inspect and edit data, follow cursor pages, manage pipelines, and transfer or restore approved data |
 | [gorse-operations](skills/gorse-operations/SKILL.md) | Inspect health/tasks, diagnose empty or stale results, and plan safe backup/restore |
 
 Suggested path: deployment → data ingestion → API integration → recommendation
